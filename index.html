@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breast Cancer Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Tailwind CSS configuration */
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+    </style>
+</head>
+<body class="bg-blue-50 text-gray-900">
+
+<!-- Navigation Bar -->
+<nav class="bg-blue-600 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+            <div>
+                <span class="text-white text-2xl font-bold">Breast Cancer Detection</span>
+            </div>
+            <div>
+                <a href="#" class="text-white hover:text-gray-200 text-lg px-4">Home</a>
+                <a href="#" class="text-white hover:text-gray-200 text-lg px-4">About</a>
+                <a href="#" class="text-white hover:text-gray-200 text-lg px-4">Contact</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section with Image -->
+<section class="bg-blue-400 text-white py-16">
+    <div class="container mx-auto flex flex-col md:flex-row items-center justify-center text-center">
+        <!-- Text Content -->
+        <div class="md:w-1/2 mb-8 md:mb-0">
+            <h1 class="text-5xl font-bold mb-4">Breast Cancer Detection</h1>
+            <p class="text-lg mb-6">Upload your medical data and let our system analyze and detect early signs of breast cancer.</p>
+            
+            <!-- Predict Button (File Upload Hidden in Button) -->
+            <form id="cancerDetectionForm" class="inline-block">
+                <label for="dataFile" class="block w-full">
+                    <div class="bg-blue-600 text-white py-3 px-6 rounded-lg text-lg font-bold hover:bg-blue-700 cursor-pointer inline-block">
+                        Predict
+                    </div>
+                    <input type="file" id="dataFile" accept=".csv,.xlsx" required class="hidden">
+                </label>
+                <input type="submit" value="Detect Cancer" class="hidden">
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Malignant and Benign Cancer Explanation Section -->
+<section class="py-16 bg-blue-100">
+    <div class="container mx-auto text-center">
+        <h2 class="text-4xl font-bold text-blue-600 mb-10">Understanding Breast Cancer Types</h2>
+
+        <!-- Single Image for Malignant and Benign Cancer -->
+        <img src="https://www.verywellhealth.com/thmb/V4VdxdpWe0V1KY871SPrfw6kRqo=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/514240-article-img-malignant-vs-benign-tumor2111891f-54cc-47aa-8967-4cd5411fdb2f-5a2848f122fa3a0037c544be.png" alt="Malignant vs Benign Tumors" class="mx-auto mb-8 rounded-lg shadow-lg w-1/2">
+
+        <!-- Side-by-Side Explanations -->
+        <div class="flex flex-col md:flex-row justify-between gap-8">
+            <div class="bg-white p-8 rounded-lg shadow-md md:w-1/2">
+                <h3 class="text-2xl font-semibold mb-4 text-green-600">Benign Tumor</h3>
+                <p>A benign tumor is non-cancerous and doesn't spread. However, monitoring is essential as it can still affect breast health.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-md md:w-1/2">
+                <h3 class="text-2xl font-semibold mb-4 text-red-600">Malignant Tumor</h3>
+                <p>A malignant tumor is cancerous and can invade nearby tissues. Early detection is crucial for treatment and prognosis.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="py-16 bg-blue-100">
+    <div class="container mx-auto text-center">
+        <h2 class="text-4xl font-bold text-blue-600 mb-10">Why Choose Our System?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-4">Accuracy</h3>
+                <p>Our system uses advanced AI techniques to provide highly accurate detection results.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-4">Speed</h3>
+                <p>Get your results in less than 3 seconds after uploading the data, ensuring a quick and smooth experience.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-4">Privacy</h3>
+                <p>Your medical data is handled with the utmost care, ensuring privacy and data protection at every step.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Loading and Result Section -->
+<section id="upload-section" class="py-16 bg-white">
+    <div class="container mx-auto max-w-2xl bg-white p-8 rounded-xl shadow-lg">
+        <div class="loading mt-6 hidden text-center" id="loading">
+            <p class="text-gray-700">Processing...</p>
+            <img class="mx-auto w-12" src="https://i.gifer.com/ZZ5H.gif" alt="loading">
+        </div>
+
+        <div class="result mt-6 p-4 rounded-lg bg-green-100 text-green-800 text-lg font-semibold hidden" id="result"></div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-blue-600 text-white py-6">
+    <div class="container mx-auto text-center">
+        <p>&copy; 2024 Breast Cancer Detection System. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('cancerDetectionForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const fileInput = document.getElementById('dataFile');
+        const resultDiv = document.getElementById('result');
+        const loadingDiv = document.getElementById('loading');
+
+        if (!fileInput.files.length) {
+            alert('Please upload a file.');
+            return;
+        }
+
+        // Show loading
+        loadingDiv.classList.remove('hidden');
+        resultDiv.classList.add('hidden');
+        resultDiv.innerHTML = '';
+
+        // Simulate file upload and processing (You can replace this part with real API call)
+        setTimeout(() => {
+            loadingDiv.classList.add('hidden');
+
+            // For demo purposes, randomly return positive or negative result
+            const detectionResult = Math.random() > 0.5 ? 'Positive for Cancer' : 'Negative for Cancer';
+            resultDiv.innerHTML = `<strong>Result: ${detectionResult}</strong>`;
+            resultDiv.classList.remove('hidden');
+        }, 3000); // Simulating processing delay of 3 seconds
+    });
+</script>
+
+</body>
+</html>
